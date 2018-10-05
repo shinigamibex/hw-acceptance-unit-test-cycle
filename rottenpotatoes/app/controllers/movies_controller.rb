@@ -1,7 +1,7 @@
 class MoviesController < ApplicationController
   
   def movie_params
-    params.require(:movie).permit(:title, :rating, :description, :release_date)
+    params.require(:movie).permit(:title, :director , :rating, :description, :release_date)
   end
 
   def show
@@ -61,4 +61,25 @@ class MoviesController < ApplicationController
     redirect_to movies_path
   end
 
+  def similar_movie
+    id1 = params[:format]
+    @movies = Movie.where(id: id1)
+    
+    
+     
+    director = String.new
+    title = String.new
+    @movies.each do |movie|
+      title = movie.title
+      director = movie.director
+    end  
+    if( director.blank?)
+      flash[:warning] = ("'#{title}' has no director info")
+      redirect_to '/movies'
+    end
+    
+    @similar_movie = Movie.where(director: director)
+    
+   
+  end
 end
